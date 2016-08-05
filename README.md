@@ -1,12 +1,13 @@
-# LeapTrainer.js v0.31
+# LeapTrainer.js v0.4
 
 A gesture and pose learning and recognition framework for the [Leap Motion](http://www.leapmotion.com/).
 
+**v0.4 uses Orion. Five digits are now always detected per hand.
 **v0.3 adds the capability to learn and recognize motionless poses, as seen in the new video below**.  
 
 For full details of the new features and fixes, [take a look at the release notes](#release-notes).
 
-Below is [a video of the LeapTrainer UI](http://youtu.be/vOk7oyOA_BI) learning and then recognizing some movements and poses.  An online demo of the UI [can be found right here](https://rawgithub.com/roboleary/LeapTrainer.js/master/trainer-ui.html).  The previous v0.2 demo video can still be found [right here](http://youtu.be/LlRsuY2zofw).
+Below is [a video of the LeapTrainer UI](http://youtu.be/vOk7oyOA_BI) learning and then recognizing some movements and poses.  An online demo of the UI [can be found right here](https://rawgit.com/zelmon64/LeapTrainer.js/master/trainer-ui.html).  The previous v0.2 demo video can still be found [right here](http://youtu.be/LlRsuY2zofw).
 
 [![ScreenShot](./resources/video-splash.png)](http://youtu.be/vOk7oyOA_BI)
 
@@ -45,7 +46,7 @@ All contributions are welcome - the best known implementation of each of the cor
 
 The [Leap Motion](http://www.leapmotion.com/) provides a mechanism to track hand and fingertip movement within a space.  
 
-LeapTrainer.js builds on top of this by providing a simple API to record and later recognise hand movements and positions within this space.  This recognition capability can be easily integrated into new applications to help build motion interfaces. 
+LeapTrainer.js builds on top of this by providing a simple API to record and later recognise hand movements and positions within this space.  This recognition capability can be easily integrated into new applications to help build motion interfaces.
 
 A gesture is a hand movement with a recognizable start and end - for example, a wave, a tapping motion, a swipe right or left.
 
@@ -55,7 +56,7 @@ The difference in how LeapTrainer recognizes gestures as opposed to poses is tha
 
 ## Usage
 
-First, you'll need a [Leap Motion](http://www.leapmotion.com/) connected to the machine you're running your browser on.  The Leap monitors movement and transmits data to the browser via the [Leap Motion Javascript API](http://js.leapmotion.com/). 
+First, you'll need a [Leap Motion](http://www.leapmotion.com/) connected to the machine you're running your browser on.  The Leap monitors movement and transmits data to the browser via the [Leap Motion Javascript API](http://js.leapmotion.com/).
 
 This data is then analysed by the LeapTrainer framework and used to learn gestures and fire events when known gestures and poses are detected.
 
@@ -81,7 +82,7 @@ The LeapTrainer controller constructor also accepts [a set of configuration vari
 
 For developers interested in developing new recording or recognition algorithms, [the LeapTrainer controller can be easily sub-classed](#sub-classing-the-leaptrainercontroller).
 
-Once a LeapTrainer controller is created it can be used to train new gestures, [receive events when known gestures are detected](#receiving-events-when-gestures-are-detected), and [import and export gestures](#importing-and-exporting-gestures). 
+Once a LeapTrainer controller is created it can be used to train new gestures, [receive events when known gestures are detected](#receiving-events-when-gestures-are-detected), and [import and export gestures](#importing-and-exporting-gestures).
 
 ## Training the system
 
@@ -134,12 +135,12 @@ Options can be passed to the LeapTrainer.Controller constructor like so:
 
 	new LeapTrainer.Controller({minRecordingVelocity: 100, downtime: 100});
 
-Some options apply to the default implementations of functions, and may be removed or redundant in sub-classes of the LeapTrainer controller. 
+Some options apply to the default implementations of functions, and may be removed or redundant in sub-classes of the LeapTrainer controller.
 
 
 * **controller** : An instance of Leap.Controller class from the [Leap Motion Javascript API](http://js.leapmotion.com/).  This will be created with default settings if not passed as an option.
 
-* **pauseOnWindowBlur** : If this variable is TRUE, then the LeapTrainer Controller will pause when the browser window loses focus, and resume when it regains focus (default: FALSE) 
+* **pauseOnWindowBlur** : If this variable is TRUE, then the LeapTrainer Controller will pause when the browser window loses focus, and resume when it regains focus (default: FALSE)
 
 * **minRecordingVelocity**: The minimum velocity a frame needs to be measured at in order to trigger gesture recording.  Frames with a velocity below this speed will cause gesture recording to stop. Frame velocity is measured as the fastest moving hand or finger tip in view (default: 300)
 
@@ -152,7 +153,7 @@ Some options apply to the default implementations of functions, and may be remov
 * **hitThreshold**: The return value of the recognition function above which a gesture is considered recognized. Raise this to make gesture recognition more strict (default: 0.7)
 
 * **trainingCountdown**: The number of seconds after _startTraining_ is called that training begins. This number of _training-countdown_ events will be emit. (default: 3)
- 
+
 * **trainingGestures**: The number of training gestures required to be performed in training mode (default: 1)
 
 * **convolutionFactor**: The factor by which training samples will be convolved over a gaussian distribution in order to expand the input training data. Set this to zero to disable convolution (default: 0)
@@ -166,12 +167,12 @@ The LeapTrainer controller will emit events to [listening components](#receiving
 
 The events below apply equally to gestures and poses (though many still specify 'gesture' - this is because poses are a new addition to the library).
 
-Apart from events for the names of recognized movements, several events inform listeners about activity inside the framework.  These events may be parameterized to provide listeners with more data. 
+Apart from events for the names of recognized movements, several events inform listeners about activity inside the framework.  These events may be parameterized to provide listeners with more data.
 
 Components can register to listen for framework events in the same way as they register to listen for gesture and pose recognition:
 
 	trainer.on('training-started', function(movementName) {
-		
+
 		console.log('Started training ' + movementName);
 	});
 
@@ -190,8 +191,8 @@ The framework events are:
 * **started-recording**: Fired when the _recordableFrame_ function returns TRUE and causes gesture recording to begin
 
 * **stopped-recording**: Fired when the _recordableFrame_ function returns FALSE and recording was active, causing gesture recording to stop
- 
-* **gesture-detected**: Fired when any gesture is detected, regardless of whether it is recognized or not.  This event fires before recognition is attempted and carries two parameters, _gesture_ and _frameCount_.  The first is the recorded encoded gesture, the second is the number of frames in the gesture. 
+
+* **gesture-detected**: Fired when any gesture is detected, regardless of whether it is recognized or not.  This event fires before recognition is attempted and carries two parameters, _gesture_ and _frameCount_.  The first is the recorded encoded gesture, the second is the number of frames in the gesture.
 
 * **gesture-recognized**: Fired when a known gesture is recognized - carries two parameters, _hit_ and _gestureName_. The _hit_ parameter is a value between 0.0 and 1.0 indicating how closely the recognized gesture was matched to the training data, with 1.0 being a 100% match.
 
@@ -217,10 +218,10 @@ Currently, only the last recorded gesture is stored - so this function should ju
 
 Any format can be used - but the format expected by the LeapTrainer UI is - for each hand:
 
-	{	position: 	[x, y, z], 
-		direction: 	[x, y, z], 
-		palmNormal	[x, y, z], 
-	
+	{	position: 	[x, y, z],
+		direction: 	[x, y, z],
+		palmNormal	[x, y, z],
+
 		fingers: 	[ { position: [x, y, z], direction: [x, y, z], length: q },
 	 				  { position: [x, y, z], direction: [x, y, z], length: q },
 					... ]
@@ -278,29 +279,29 @@ Consequently, a simple mechanism is provided for extending the LeapTrainer.Contr
 
 	LeapTrainer.SVMController = LeapTrainer.Controller.extend({
 
-	    getRecognitionStrategy : function() { 
+	    getRecognitionStrategy : function() {
 
-	        return 'Support Vector Machines'; 
+	        return 'Support Vector Machines';
 	    },
 
-	    trainAlgorithm: function (gestureName, trainingGestures) { 
+	    trainAlgorithm: function (gestureName, trainingGestures) {
 
-	        ...train an SVM... 
+	        ...train an SVM...
 	    },
 
-	    correlate: function(gestureName, trainingGestures, gesture) { 
+	    correlate: function(gestureName, trainingGestures, gesture) {
 
-	        ..perform SVM pattern recognition... 
+	        ..perform SVM pattern recognition...
 	    }
 	});
 
 Sub-classes of the default LeapTrainer.Controller can be found in the /sub-classes/ folder of the project.  Currently, three exist:
 
 * **Cross-correlation recognition**: This was the default recognition algorithm in the first version of the framework. It performs algebraic cross-correlation to detect simiarities between learned and input gestures.
- 
+
 * **High-Resolution recorder**: Records much more data per frame - increases the accuracy of recorded gestures, but makes recognition that much more difficult.
 
-* **Neural network recognition** Implements artificial neural network-based gesture recognition. 
+* **Neural network recognition** Implements artificial neural network-based gesture recognition.
 
 Sub-classes can be integrated into the LeapTrainer UI for testing and experimentation as described below.
 
@@ -310,7 +311,7 @@ Not every application will need to implement training of new gestures - so a Lea
 
 **Note:** _The current training UI was a major upgrade in version v0.2 - replacing the original v0.1 interface entirely._
 
-This interface is also useful for experimentation with alternative algorithms for training and recognition, and for getting general feedback on what's happening 
+This interface is also useful for experimentation with alternative algorithms for training and recognition, and for getting general feedback on what's happening
 inside the framework at runtime.
 
 ![ScreenShot](./resources/leaptrainer-ui.png)
@@ -331,7 +332,7 @@ Setting the _recording trigger_, _gesture encoding_, or _recognition strategy_ v
 
 If an included javascript contains a sub-class of the LeapTrainer.Controller object, the UI will pick it up automatically and allow it to be selected as the active controller.  In this way new implementations can be easily tested by just including them in the training UI HTML page.
 
-The open and close functions for the options panel can be bound to learned gestures as an example of controlling an interface with gesture input. 
+The open and close functions for the options panel can be bound to learned gestures as an example of controlling an interface with gesture input.
 
 ![ScreenShot](./resources/training-ui-gesture-config.png)
 
@@ -359,7 +360,7 @@ Finally, trained gestures can be exported from the UI by clicking on them in the
 
 ![ScreenShot](./resources/training-ui-export.png)
 
-The export overlay also provides a _retrain_ button that will return the interface to training mode for the selected gesture, allowing training data to be re-recorded for existing gestures. 
+The export overlay also provides a _retrain_ button that will return the interface to training mode for the selected gesture, allowing training data to be re-recorded for existing gestures.
 
 The training UI code is fully commented and can be used as is or modified in other applications (within the bounds of the [MIT license](http://www.opensource.org/licenses/mit-license.php)).
 
